@@ -73,7 +73,8 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(breed.temperament),
-                            Text(breed.intelligence.toString()),
+                            Text(
+                                'Intelligence: ${breed.intelligence.toString()}'),
                           ],
                         ),
                         trailing: IconButton(

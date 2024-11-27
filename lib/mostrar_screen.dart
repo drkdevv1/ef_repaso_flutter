@@ -1,8 +1,10 @@
-import 'package:drift/drift.dart' as drift;
+// lib/mostrar_screen.dart
+import 'package:flutter/material.dart';
 import 'package:ef_repaso_flutter/api/Breed.dart' as api;
 import 'package:ef_repaso_flutter/api/Service.dart';
-import 'package:flutter/material.dart';
 import 'package:ef_repaso_flutter/database/database.dart' as db;
+import 'package:ef_repaso_flutter/details_screen.dart';
+//import 'package:drift/drift.dart' as drift;
 
 class MostrarScreen extends StatefulWidget {
   const MostrarScreen({super.key});
@@ -51,71 +53,56 @@ class _MostrarScreenState extends State<MostrarScreen> {
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
                 final breed = snapshot.data![index];
-                final isFavorite = _favoriteBreeds.contains(breed.id);
-                return Card(
-                  child: Column(
-                    children: [
-                      breed.referenceImageId.isNotEmpty
-                          ? Image.network(
-                              'https://cdn2.thecatapi.com/images/${breed.referenceImageId}.jpg',
-                              width: double.infinity,
-                              height: 200,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return const Icon(
-                                  Icons.broken_image,
-                                  size: 100,
-                                  color: Colors.grey,
-                                );
-                              },
-                            )
-                          : const Icon(
-                              Icons.image_not_supported,
-                              size: 100,
-                              color: Colors.grey,
-                            ),
-                      ListTile(
-                        title: Text(breed.name),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(breed.description),
-                            Slider(
-                              value: breed.energyLevel.toDouble(),
-                              min: 0,
-                              max: 5,
-                              divisions: 5,
-                              label: breed.energyLevel.toString(),
-                              onChanged: null, // Slider de solo lectura
-                            ),
-                          ],
-                        ),
-                        trailing: IconButton(
-                          icon: Icon(
-                            isFavorite ? Icons.favorite : Icons.favorite_border,
-                            color: isFavorite ? Colors.red : null,
-                          ),
-                          onPressed: () async {
-                            setState(() {
-                              if (isFavorite) {
-                                _favoriteBreeds.remove(breed.id);
-                                _database.eliminarBreed(breed.id);
-                              } else {
-                                _favoriteBreeds.add(breed.id);
-                                _database.insertBreed(db.BreedsCompanion(
-                                  id: drift.Value(breed.id),
-                                  name: drift.Value(breed.name),
-                                  referenceImageId:
-                                      drift.Value(breed.referenceImageId),
-                                  temperament: drift.Value(breed.temperament),
-                                  intelligence: drift.Value(breed.intelligence),
-                                ));
-                              }
-                            });
-                          },
-                        ),
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DetailsScreen(breed: breed),
                       ),
-                    ],
+                    );
+                  },
+                  child: Card(
+                    child: Column(
+                      children: [
+                        breed.referenceImageId.isNotEmpty
+                            ? Image.network(
+                                'https://cdn2.thecatapi.com/images/${breed.referenceImageId}.jpg',
+                                width: double.infinity,
+                                height: 200,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return const Icon(
+                                    Icons.broken_image,
+                                    size: 100,
+                                    color: Colors.grey,
+                                  );
+                                },
+                              )
+                            : const Icon(
+                                Icons.image_not_supported,
+                                size: 100,
+                                color: Colors.grey,
+                              ),
+                        ListTile(
+                          title: Text(breed.name),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(breed.description),
+                              Slider(
+                                value: breed.energyLevel.toDouble(),
+                                min: 0,
+                                max: 5,
+                                divisions: 5,
+                                label: breed.energyLevel.toString(),
+                                onChanged: null, // Slider de solo lectura
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
