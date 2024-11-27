@@ -8,6 +8,8 @@ part 'database.g.dart';
 class Breeds extends Table {
   TextColumn get id => text().named('id')();
   TextColumn get name => text().named('name')();
+  IntColumn get energyLevel => integer().named('energyLevel')();
+  TextColumn get description => text().named('description')();
   TextColumn get referenceImageId => text().named('referenceImageId')();
   TextColumn get temperament => text().named('temperament')();
   IntColumn get intelligence => integer().named('intelligence')();
@@ -26,12 +28,26 @@ LazyDatabase abrirConexion() {
 
 @DriftDatabase(tables: [Breeds])
 class AppDatabase extends _$AppDatabase {
-  AppDatabase() : super(abrirConexion());
+  AppDatabase._internal() : super(abrirConexion());
+
+  static final AppDatabase _instance = AppDatabase._internal();
+
+  factory AppDatabase() {
+    return _instance;
+  }
 
   @override
   int get schemaVersion => 1;
 
   Future<int> insertBreed(BreedsCompanion breed) async {
+    // Verificar si el Breed ya existe
+    final existingBreed = await (select(breeds)
+          ..where((tbl) => tbl.id.equals(breed.id.value)))
+        .getSingleOrNull();
+    if (existingBreed != null) {
+      // Si ya existe, no realizar la inserción
+      return 0;
+    }
     return await into(breeds).insert(breed);
   }
 
