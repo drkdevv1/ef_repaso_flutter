@@ -43,12 +43,20 @@ dependencies:
   provider: ^6.0.3
   intl: ^0.17.0
   flutter_launcher_icons: ^0.12.0
+  flutter_native_splash: ^2.4.3
 
 flutter_icons:
   android: true
   ios: true
   image_path: "assets/cat_image.png"
   min_sdk_android: 24
+
+flutter_native_splash:
+  android: true
+  ios: true
+  web: false
+  color: "#ffffff"
+  image: assets/cat_image.png
 
 dev_dependencies:
   flutter_test:
